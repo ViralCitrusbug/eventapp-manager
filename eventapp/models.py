@@ -19,8 +19,6 @@ class EventDate(models.Model):
     def __str__(self) -> str:
         return str(self.date)
 
-
-
 class Time(models.Model):
     time = models.TimeField(blank=True,null=True,db_column='t')
     mod = models.IntegerField(blank=True,null=True)
@@ -32,13 +30,15 @@ class Time(models.Model):
         db_table = 'cv_alloc_times'
         ordering =  ('time',)
 
-
 class EventSlot(models.Model):
+    event = models.ForeignKey(Event,on_delete=models.CASCADE)
     date = models.ForeignKey(EventDate,on_delete=models.CASCADE)
     time = models.ForeignKey(Time,on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return str(self.time.time)
+        return str(self.time)
+
+        
 # event_data:[
 # {"date":10-11-2021, "start_slot":"01:00", "end_slot":"06:00"},
 # {"date":11-11-2021, "start_slot":"05:00", "end_slot":"12:00"}, 

@@ -1,4 +1,6 @@
-import json
+from asyncio.windows_events import NULL
+from re import T
+from this import d
 from django.http import HttpResponse,JsonResponse
 from django.shortcuts import render
 from rest_framework.views import APIView
@@ -30,17 +32,51 @@ class EventDetail(APIView):
             return event
         except Event.DoesNotExist:
             return False
-    
+        
+    # def get(self,request,pk):
+    #     if self.get_event(pk):
+    #         events = Event.objects.filter(pk=pk)
+    #         dates = events.first().eventdate_set.all()
+    #         data = []
+    #         slot = []
+    #         available_slot=[]
+    #         dates_filter = {}
+    #         for date in dates:
+    #             if date not in dates_filter:
+    #                 time_slot = EventSlot.objects.filter(event=events.first(),date=date)
+    #                 for i in set(time_slot):
+    #                     slot = Time.objects.exclude(time=str(i))
+    #                     for j in set(slot):
+    #                         t = (TimeSerializer(j).data).get('time')
+    #                         available_slot.append(t)
+    #                 data.append({"date":(EventDateSerializer(date).data).get('date'),
+    #                              "available_slot":sorted(set(available_slot))
+    #                              })
+    #                 dates_filter[date] = True
+    #         return Response(data)
+    #     else:
+    #         return Response("Event Not Found")
     def get(self,request,pk):
         if self.get_event(pk):
-            queryset = self.get_event(pk)
-            serialize = EventSerializer(queryset)
-            print(type(i.date for i in queryset.eventdate_set.all()))
-            response ={
-                'event':serialize.data,
-                'date':(i.date for i in queryset.eventdate_set.all())
-            }
-            return Response(response)
+            events = Event.objects.filter(pk=pk)
+            dates = events.first().eventdate_set.all()
+            data = []
+            slot = []
+            available_slot=[]
+            dates_filter = {}
+            for date in dates:
+                if date not in dates_filter:
+                    time_slot = EventSlot.objects.filter(event=events.first(),date=date)
+                    for i in set(time_slot):
+                        slot = Time.objects.exclude(time=str(i))
+                        for j in set(slot):
+                            t = (TimeSerializer(j).data).get('time')
+                            available_slot.append(t)
+                    data.append({"date":(EventDateSerializer(date).data).get('date'),
+                                 "available_slot":sorted(set(available_slot))
+                                 })
+                    dates_filter[date] = True
+            return Response(data)
         else:
             return Response("Event Not Found")
 

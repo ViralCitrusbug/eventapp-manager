@@ -1,5 +1,12 @@
+from calendar import c
+from re import T
 from rest_framework import serializers
 from . models import *
+
+class TimeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Time
+        fields = "__all__"
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,11 +33,16 @@ class EventDateSerializer(serializers.ModelSerializer):
         print(event)
     
 class EventSlotSerializer(serializers.ModelSerializer):
+    time = TimeSerializer(many=True)
     class Meta:
         model = EventSlot
         fields = "__all__"
 
-class TimeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Time
-        fields = "__all__"
+
+
+
+class CustomEventSerializer(serializers.Serializer):
+    date = EventDateSerializer(many=True)
+    time_data = TimeSerializer(many=True)
+    
+    
