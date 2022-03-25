@@ -37,12 +37,3 @@ class EventSlotSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventSlot
         fields = "__all__"
-
-
-
-
-class CustomEventSerializer(serializers.Serializer):
-    date = EventDateSerializer(many=True)
-    time_data = TimeSerializer(many=True)
-    
-    
